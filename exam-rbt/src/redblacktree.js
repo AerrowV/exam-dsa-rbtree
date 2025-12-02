@@ -23,6 +23,13 @@ export default class RedBlackTree {
     this.nil.right = this.nil;
     this.nil.parent = this.nil;
     this.root = this.nil;
+    this.onChange = null;
+  }
+
+  notifyChange() {
+    if (typeof this.onChange === "function") {
+      this.onChange();
+    }
   }
 
   insert(value) {
@@ -53,7 +60,10 @@ export default class RedBlackTree {
     z.left = this.nil;
     z.right = this.nil;
     z.color = red;
+
+    this.notifyChange();
     this.insertFixup(z);
+    this.notifyChange();
   }
 
   leftRotate(x) {
@@ -67,6 +77,7 @@ export default class RedBlackTree {
       return;
     }
 
+    this.notifyChange();
     const y = x.right;
     x.right = y.left;
     if (y.left !== this.nil) {
@@ -85,6 +96,7 @@ export default class RedBlackTree {
 
     y.left = x;
     x.parent = y;
+    this.notifyChange();
   }
 
   rightRotate(x) {
@@ -98,6 +110,7 @@ export default class RedBlackTree {
       return;
     }
 
+    this.notifyChange();
     const y = x.left;
     x.left = y.right;
     if (y.right !== this.nil) {
@@ -116,6 +129,7 @@ export default class RedBlackTree {
 
     y.right = x;
     x.parent = y;
+    this.notifyChange();
   }
 
   insertFixup(z) {
@@ -124,11 +138,12 @@ export default class RedBlackTree {
     while (z.parent.color === red) {
       if (z.parent === z.parent.parent.left) {
         y = z.parent.parent.right;
-        if ((y.color === red)) {
+        if (y.color === red) {
           z.parent.color = black;
           y.color = black;
           z.parent.parent.color = red;
           z = z.parent.parent;
+          this.notifyChange();
         } else {
           if (z === z.parent.right) {
             z = z.parent;
@@ -137,6 +152,7 @@ export default class RedBlackTree {
 
           z.parent.color = black;
           z.parent.parent.color = red;
+          this.notifyChange();
           this.rightRotate(z.parent.parent);
         }
       } else {
@@ -146,6 +162,7 @@ export default class RedBlackTree {
           y.color = black;
           z.parent.parent.color = red;
           z = z.parent.parent;
+          this.notifyChange();
         } else {
           if (z === z.parent.left) {
             z = z.parent;
@@ -154,10 +171,42 @@ export default class RedBlackTree {
 
           z.parent.color = black;
           z.parent.parent.color = red;
+          this.notifyChange();
           this.leftRotate(z.parent.parent);
         }
       }
     }
     this.root.color = black;
+  }
+
+  inOrderTraversal(t) {
+    if (t !== this.nil) {
+      this.inOrderTraversal(t.left);
+      console.log(
+        `${t.value} (${t.color}) | P:${t.parent.value} L:${t.left.value} R:${t.right.value}`
+      );
+
+      this.inOrderTraversal(t.right);
+    }
+  }
+
+  levelOrderTraversal(t) {
+    let queue = [];
+
+    if (t !== this.nil) {
+      queue.push(t);
+    }
+    
+    while (queue.length > 0) {
+      const node = queue.shift();
+      console.log(`${node.value}, ${node.color}`);
+
+      if (node.left !== this.nil) {
+        queue.push(node.left);
+      }
+      if (node.right !== this.nil) {
+        queue.push(node.right);
+      }
+    }
   }
 }
