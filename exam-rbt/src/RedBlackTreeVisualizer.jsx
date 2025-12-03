@@ -7,7 +7,7 @@ const LEVEL_HEIGHT = 80;
 const STEP_DURATION = 1000;
 
 function buildVisualNodes(tree) {
-  const nodes = [];
+  const nodes = []; 
   let idCounter = 0;
 
   function dfs(node, depth, xMin, xMax, parentId) {
@@ -87,48 +87,23 @@ export default function RedBlackTreeVisualizer() {
 
   return (
     <div
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        padding: "1.5rem",
-        background: "white",
-        borderRadius: "0.75rem",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
-        maxWidth: "900px",
-        width: "100%",
-      }}
     >
-      <h1 style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>
+      <h1>
         Red–Black Tree Visualizer
       </h1>
 
-      <p
-        style={{ fontSize: "0.9rem", color: "#6b7280", marginBottom: "0.5rem" }}
-      >
+      <p>
         Insert a value to see the <strong>rotations and recolorings</strong>{" "}
         step by step.
       </p>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "0.5rem",
-          marginBottom: "1rem",
-          alignItems: "center",
-        }}
-      >
+      <div>
         <input
           type="number"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Enter value..."
           disabled={isPlaying}
-          style={{
-            padding: "0.4rem 0.6rem",
-            borderRadius: "0.375rem",
-            border: "1px solid #ccc",
-            minWidth: "150px",
-            opacity: isPlaying ? 0.6 : 1,
-          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleInsert();
           }}
@@ -136,15 +111,6 @@ export default function RedBlackTreeVisualizer() {
         <button
           onClick={handleInsert}
           disabled={isPlaying}
-          style={{
-            padding: "0.4rem 0.9rem",
-            borderRadius: "0.375rem",
-            border: "none",
-            cursor: isPlaying ? "default" : "pointer",
-            background: isPlaying ? "#9ca3af" : "#2563eb",
-            color: "white",
-            fontWeight: 500,
-          }}
         >
           {isPlaying ? "Playing…" : "Insert"}
         </button>
@@ -153,21 +119,11 @@ export default function RedBlackTreeVisualizer() {
             const tree = treeRef.current;
             tree.inOrderTraversal(tree.root);
           }}
-          style={{
-            marginBottom: "1rem",
-            padding: "0.4rem 0.9rem",
-            borderRadius: "0.375rem",
-            border: "none",
-            background: "#10b981",
-            color: "white",
-            cursor: "pointer",
-            fontWeight: 500,
-          }}
         >
           Inorder Traversal
         </button>
         {isPlaying && (
-          <span style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+          <span>
             Step {stepIndex + 1}
           </span>
         )}
@@ -176,11 +132,6 @@ export default function RedBlackTreeVisualizer() {
       <svg
         width={SVG_WIDTH}
         height={SVG_HEIGHT}
-        style={{
-          border: "1px solid #e5e7eb",
-          borderRadius: "0.75rem",
-          background: "#f9fafb",
-        }}
       >
         {nodes.map((node) => {
           if (node.parentId == null) return null;
