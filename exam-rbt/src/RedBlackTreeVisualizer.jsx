@@ -142,7 +142,6 @@ export default function RedBlackTreeVisualizer() {
       </div>
 
       <svg width={SVG_WIDTH} height={SVG_HEIGHT}>
-    
         {visibleNodes.map((node) => {
           if (node.parentId == null) return null;
           const parent = nodeMap.get(node.parentId);
@@ -159,7 +158,7 @@ export default function RedBlackTreeVisualizer() {
             />
           );
         })}
-        
+
         {visibleNodes.map((node) => (
           <g
             key={node.id}
@@ -172,7 +171,13 @@ export default function RedBlackTreeVisualizer() {
               cx={0}
               cy={0}
               r={node.isNil ? 14 : 22}
-              fill={node.isNil ? "#111827" : node.color === "Red" ? "#ef4444" : "#111827"}
+              fill={
+                node.isNil
+                  ? "#111827"
+                  : node.color === "Red"
+                  ? "#ef4444"
+                  : "#111827"
+              }
               stroke="#6b7280"
               strokeWidth={2}
               strokeDasharray={node.isNil ? "4 4" : "0"}
