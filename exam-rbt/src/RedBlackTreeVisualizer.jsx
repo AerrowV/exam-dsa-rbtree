@@ -7,11 +7,13 @@ const LEVEL_HEIGHT = 80;
 const STEP_DURATION = 1000;
 
 function buildVisualNodes(tree) {
-  const nodes = []; 
+  const nodes = [];
   let idCounter = 0;
 
   function dfs(node, depth, xMin, xMax, parentId) {
-    if (!node || node === tree.nil || node.value === null) return;
+    if (!node) return;
+
+    const isNil = node === tree.nil || node.value === null;
 
     const id = idCounter++;
     const x = (xMin + xMax) / 2;
@@ -19,19 +21,25 @@ function buildVisualNodes(tree) {
 
     nodes.push({
       id,
-      value: node.value,
-      color: node.color,
+      value: isNil ? null : node.value,
+      color: isNil ? "Black" : node.color,
       x,
       y,
       parentId,
+      isNil,
     });
+
+    if (isNil) return;
 
     const mid = (xMin + xMax) / 2;
     dfs(node.left, depth + 1, xMin, mid, id);
     dfs(node.right, depth + 1, mid, xMax, id);
   }
 
-  dfs(tree.root, 0, 0, SVG_WIDTH, undefined);
+  if (tree.root && tree.root !== tree.nil) {
+    dfs(tree.root, 0, 0, SVG_WIDTH, undefined);
+  }
+
   return nodes;
 }
 
@@ -41,6 +49,7 @@ export default function RedBlackTreeVisualizer() {
   const [inputValue, setInputValue] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const [showNullNodes, setShowNullNodes] = useState(true);
 
   const handleInsert = () => {
     const num = Number(inputValue);
@@ -83,14 +92,12 @@ export default function RedBlackTreeVisualizer() {
     playFrame(0);
   };
 
-  const nodeMap = new Map(nodes.map((n) => [n.id, n]));
+  const visibleNodes = nodes.filter((n) => showNullNodes || !n.isNil);
+  const nodeMap = new Map(visibleNodes.map((n) => [n.id, n]));
 
   return (
-    <div
-    >
-      <h1>
-        Red–Black Tree Visualizer
-      </h1>
+    <div>
+      <h1>Red–Black Tree Visualizer</h1>
 
       <p>
         Insert a value to see the <strong>rotations and recolorings</strong>{" "}
@@ -108,10 +115,7 @@ export default function RedBlackTreeVisualizer() {
             if (e.key === "Enter") handleInsert();
           }}
         />
-        <button
-          onClick={handleInsert}
-          disabled={isPlaying}
-        >
+        <button onClick={handleInsert} disabled={isPlaying}>
           {isPlaying ? "Playing…" : "Insert"}
         </button>
         <button
@@ -122,18 +126,24 @@ export default function RedBlackTreeVisualizer() {
         >
           Inorder Traversal
         </button>
+
+        <label style={{ marginLeft: "1rem" }}>
+          <input
+            type="checkbox"
+            checked={showNullNodes}
+            onChange={(e) => setShowNullNodes(e.target.checked)}
+          />{" "}
+          Show null (NIL) nodes
+        </label>
+
         {isPlaying && (
-          <span>
-            Step {stepIndex + 1}
-          </span>
+          <span style={{ marginLeft: "1rem" }}>Step {stepIndex + 1}</span>
         )}
       </div>
 
-      <svg
-        width={SVG_WIDTH}
-        height={SVG_HEIGHT}
-      >
-        {nodes.map((node) => {
+      <svg width={SVG_WIDTH} height={SVG_HEIGHT}>
+    
+        {visibleNodes.map((node) => {
           if (node.parentId == null) return null;
           const parent = nodeMap.get(node.parentId);
           if (!parent) return null;
@@ -149,7 +159,8 @@ export default function RedBlackTreeVisualizer() {
             />
           );
         })}
-        {nodes.map((node) => (
+        
+        {visibleNodes.map((node) => (
           <g
             key={node.id}
             style={{
@@ -160,14 +171,34 @@ export default function RedBlackTreeVisualizer() {
             <circle
               cx={0}
               cy={0}
-              r={22}
-              fill={node.color === "Red" ? "#ef4444" : "#111827"}
-              stroke="#111827"
+              r={node.isNil ? 14 : 22}
+              fill={node.isNil ? "#111827" : node.color === "Red" ? "#ef4444" : "#111827"}
+              stroke="#6b7280"
               strokeWidth={2}
+              strokeDasharray={node.isNil ? "4 4" : "0"}
             />
-            <text x={0} y={5} textAnchor="middle" fontSize="14" fill="#f9fafb">
-              {node.value}
-            </text>
+            {!node.isNil && (
+              <text
+                x={0}
+                y={5}
+                textAnchor="middle"
+                fontSize="14"
+                fill="#f9fafb"
+              >
+                {node.value}
+              </text>
+            )}
+            {node.isNil && (
+              <text
+                x={0}
+                y={4}
+                textAnchor="middle"
+                fontSize="10"
+                fill="#ffffff"
+              >
+                NIL
+              </text>
+            )}
           </g>
         ))}
       </svg>
