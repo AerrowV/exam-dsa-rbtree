@@ -97,11 +97,10 @@ export default function RedBlackTreeVisualizer() {
 
   return (
     <div>
-      <h1>Red–Black Tree Visualizer</h1>
+      <h1>Red-Black Tree Visualizer</h1>
 
       <p>
-        Insert a value to see the <strong>rotations and recolorings</strong>{" "}
-        step by step.
+        Insert a value
       </p>
 
       <div>
