@@ -19,5 +19,3 @@
 ## Deployment:
 ### Github Pages: 
     https://aerrowv.github.io/exam-dsa-rbtree/index.html
-
-## Hvad & Hvordan:
