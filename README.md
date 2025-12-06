@@ -19,3 +19,7 @@
 ## Deployment:
 ### Github Pages: 
     https://aerrowv.github.io/exam-dsa-rbtree/index.html
+## Hvad & Hvordan
+    1. Sørg for at være på det rigtige directory.
+    2. I terminalen skriv: npm install
+    3. I terminalen skriv: npm run dev
